@@ -6,25 +6,28 @@ import (
 )
 
 // detectType определяет тип переданного значения и выводит его.
-func detectType(v any) string {
+func detectType(v any) (n int, err error) {
 	switch v.(type) {
 	case int:
-		fmt.Println("Тип:", reflect.TypeOf(v))
+		return fmt.Println("Тип:", reflect.TypeOf(v))
 	case string:
-		fmt.Println("Тип:", reflect.TypeOf(v))
+		return fmt.Println("Тип:", reflect.TypeOf(v))
 	case bool:
-		fmt.Println("Тип:", reflect.TypeOf(v))
+		return fmt.Println("Тип:", reflect.TypeOf(v))
 	case chan int:
-		fmt.Println("Тип:", reflect.TypeOf(v))
-	default:
-		fmt.Println("Неизвестный тип")
+		return fmt.Println("Тип:", reflect.TypeOf(v))
 	}
-	return "Ни один из типов не подошёл"
+
+	if t := reflect.TypeOf(v); t != nil && t.Kind() == reflect.Chan {
+		return fmt.Println("Тип:", t)
+	}
+
+	return fmt.Println("Неизвестный тип")
 }
 
 func main() {
 	detectType(42)
 	detectType("hello")
 	detectType(true)
-	detectType(make(chan int))
+	detectType(make(chan <- int))
 }
